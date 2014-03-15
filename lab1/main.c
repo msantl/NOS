@@ -166,8 +166,9 @@ int main(int argc, char **argv) {
 
         } else if (state == 4) {
             /* cekaj pritisak bilo koje tipke */
-            printf("Pritisnite bilo koju tipku za izlaz..."); fflush(stdout);
-            scanf("%s", buf);
+            printf("Pritisnite tipku ENTER za izlaz..."); fflush(stdout);
+            /* ucitaj zadnji <enter>, ucitaj novi <enter> */
+            getchar();  getchar();
 
             /* posalji poruku o kraju */
             msg = StvoriPoruku("fin", FIN);
