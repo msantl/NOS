@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <string.h>
 
@@ -8,9 +9,12 @@
 #define MAXGRID     32
 #define QUEUE_KEY   12345
 
-#define CTRL        1
-#define RES         2
-#define REQ         3
+#define SYN         1
+#define ACK         2
+#define SYN_ACK     3
+#define FIN         4
+#define RES         5
+#define REQ         6
 
 #define BROD        'x'
 #define MORE        '.'
@@ -24,11 +28,24 @@
  * stanje = 0 -> igra je gotova
  */
 int state = 0;
+
+/*
+ * Opis polozaja brodova
+ */
 char grid[MAXGRID][MAXGRID];
+
+/*
+ * Globalni identifikator reda poruka
+ */
+int q;
 
 void kraj(int sig) {
     state = 0;
-    return;
+
+    /* obrisi red nakon koristenja */
+    ObrisiRedPoruka(q);
+
+    exit(sig);
 }
 
 void print_usage() {
@@ -41,7 +58,7 @@ void print_usage() {
 }
 
 int main(int argc, char **argv) {
-    int i, j, q, preostalo_brodova = 0;
+    int i, j, preostalo_brodova = 0;
     key_t key = QUEUE_KEY;
 
     char buf[MSGLEN];
@@ -62,24 +79,35 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf("Igra pocinje\n");
+    printf("Cekam drugog igraca ...\n");
 
     q = StvoriRedPoruka(key);
 
     /* Odredimo tko je prvi proces */
-    if (PrimiPorukuBezCekanja(q, &msg, CTRL) == -1) {
+    if (PrimiPorukuBezCekanja(q, &msg, SYN) == -1) {
         /* proces 1 */
-        msg = StvoriPoruku("init", CTRL);
+        msg = StvoriPoruku("init", SYN);
+        PosaljiPoruku(q, msg);
+
+        PrimiPoruku(q, &msg, SYN_ACK);
+
+        msg = StvoriPoruku("ack", ACK);
         PosaljiPoruku(q, msg);
 
         state = 1;
 
     } else {
         /* proces 2 */
+        msg = StvoriPoruku("syn-ack", SYN_ACK);
+        PosaljiPoruku(q, msg);
+
+        PrimiPoruku(q, &msg, ACK);
+
         state = 2;
     }
 
     printf("Proces %d\n", state);
+    printf("Igra pocinje\n");
 
     while (state != 0) {
 
@@ -133,24 +161,29 @@ int main(int argc, char **argv) {
 
         } else if (state == 4) {
             /* cekaj pritisak bilo koje tipke */
+            printf("Pritisnite bilo koju tipku za izlaz..."); fflush(stdout);
             scanf("%s", buf);
 
             /* posalji poruku o kraju */
-            msg = StvoriPoruku("fin", CTRL);
+            msg = StvoriPoruku("fin", FIN);
             PosaljiPoruku(q, msg);
 
             state = 0;
 
         } else if (state == 5) {
             /* cekaj poruku kraja igre */
-            PrimiPoruku(q, &msg, CTRL);
+            PrimiPoruku(q, &msg, FIN);
 
-            /* obrisi red nakon koristenja */
-            ObrisiRedPoruka(q);
+            /* zavrsi igru */
+            kraj(0);
 
             state = 0;
 
         } else {
+            /*
+             * Ovdje se u pravilu ne bi trebali nikad naci, ali u slucaju da se
+             * nadjemo samo izadji iz petlje
+             */
             state = 0;
         }
     }
