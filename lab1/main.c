@@ -16,7 +16,7 @@
 #define RES         5
 #define REQ         6
 
-#define BROD        'x'
+#define BROD        'o'
 #define MORE        '.'
 
 /*
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     /* Odredimo tko je prvi proces */
     if (PrimiPorukuBezCekanja(q, &msg, SYN) == -1) {
         /* proces 1 */
-        msg = StvoriPoruku("init", SYN);
+        msg = StvoriPoruku("syn", SYN);
         PosaljiPoruku(q, msg);
 
         PrimiPoruku(q, &msg, SYN_ACK);
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
         if (state == 1) {
             state = 2;
 
-            printf("Ispali na polje: "); fflush(stdout);
+            printf("ispali na polje: "); fflush(stdout);
             scanf("%d%d", &i, &j);
 
             /* posalji koordinate */
@@ -141,6 +141,8 @@ int main(int argc, char **argv) {
 
             sscanf(msg.data, "%d-%d", &i, &j);  --i; --j;
 
+            printf("pucano na polje: %d %d\n", i + 1, j + 1);
+
             /* posalji odgovor */
             if (0 <= i && i < GRID && 0 <= j && j < GRID && grid[i][j] == BROD) {
                 preostalo_brodova -= 1;
@@ -148,6 +150,8 @@ int main(int argc, char **argv) {
 
                 if (preostalo_brodova > 0) {
                     msg = StvoriPoruku("pogodak", RES);
+                    printf("pogodak\n");
+
                 } else {
                     msg = StvoriPoruku("pobjeda", RES);
                     printf("poraz\n");
@@ -156,6 +160,7 @@ int main(int argc, char **argv) {
                 }
             } else {
                 msg = StvoriPoruku("promasaj", RES);
+                printf("promasaj\n");
             }
             PosaljiPoruku(q, msg);
 
