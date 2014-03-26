@@ -13,4 +13,4 @@ $(PROJECT): $(OBJECTS)
 $(OBJECTS): $(HEADERS)
 
 clean:
-	-rm -f $(PROJECT) $(OBJECTS) *.core
+	-rm -f $(PROJECT) $(OBJECTS) *.core cevovod_r cevovod_w
