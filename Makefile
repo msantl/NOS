@@ -8,7 +8,7 @@ LDFLAGS =
 OBJECTS = ${SOURCE:.c=.o}
 
 $(PROJECT): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(PROJECT)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(PROJECT) $(LDFLAGS)
 
 $(OBJECTS): $(HEADERS)
 
