@@ -35,26 +35,20 @@ int main(int argc, char** argv) {
         PARAMS.L = (uint32_t) log2(PARAMS.W);
         PARAMS.Nr = 12 + 2 * PARAMS.L;
 
-        printf("N = %d\nR = %d\nC = %d\nB = %d\nW = %d\nL = %d\nNr = %d\n",
-                PARAMS.N,
-                PARAMS.R,
-                PARAMS.C,
-                PARAMS.B,
-                PARAMS.W,
-                PARAMS.L,
-                PARAMS.Nr);
+        fprintf(stderr,
+                "N = %d\nR = %d\nC = %d\nB = %d\nW = %d\nL = %d\nNr = %d\n",
+                PARAMS.N, PARAMS.R, PARAMS.C, PARAMS.B,
+                PARAMS.W, PARAMS.L, PARAMS.Nr);
     }
 
     int32_t size = strlen(argv[1]);
-    uint8_t *message = (uint8_t *) malloc(size * sizeof(uint8_t));
 
-    uint8_t *sha3sum = sponge(message, size);
+    uint8_t *sha3sum = sponge((uint8_t *)argv[1], size);
 
     for (uint32_t i = 0; i < PARAMS.n; ++i) {
         printf("%x", sha3sum[i]);
     }   printf("\n");
 
-    free(message);
     free(sha3sum);
 
     return 0;

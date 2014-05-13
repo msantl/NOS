@@ -1,16 +1,17 @@
 #include "keccak.hh"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 extern struct param_t PARAMS;
 
 uint8_t *sponge(uint8_t *msg, int32_t size) {
-    uint64_t *new_msg;
+    uint64_t *new_msg = (uint64_t *) msg;
+    uint8_t padded = 0;
 
-    if ((size % PARAMS.r) != 0) {
+    if (size % PARAMS.r != 0) {
         new_msg = (uint64_t *) padding(msg, &size);
-    } else {
-        new_msg = (uint64_t *) msg;
+        padded = 1;
     }
 
     uint64_t **S = (uint64_t **) calloc(5, sizeof(uint64_t *));
@@ -43,6 +44,10 @@ uint8_t *sponge(uint8_t *msg, int32_t size) {
                 }
             }
         }
+    }
+
+    if (padded) {
+        free(new_msg);
     }
 
     free(S);
