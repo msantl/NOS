@@ -5,4 +5,6 @@
 potapljanje_brodova
 cjevovod
 sha3sum
+
+libcrypto/
 signature
