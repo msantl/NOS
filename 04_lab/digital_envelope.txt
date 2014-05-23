@@ -1,0 +1,29 @@
+---BEGIN OS2 CRYPTO DATA---
+Description:
+    Envelope
+
+File name:
+    Datoteka.x
+
+Method:
+    AES
+    RSA
+
+Key length:
+    0100
+    0400
+
+Envelope data:
+    asdhfgakewgrqj23rfj213hgf5j234crj3t2n3h4j2hgc54j51c2j35c12j1
+    wjhacsjfcjdhgj23gjr213ecr5r234jqg3j2a3h4f2thg54c51k2j35n12f3
+    dmwtfgdyeignoz23nfz213tgf5z234snz3l2u3t4z2tgs54z51s2z35s12za
+    iztdsmzfszwtgz23gzn213esn5n234zog3z2d3t4f2ltg54s51y2z35u12f5
+    rtwasd=
+
+Envelope crypt key:
+    123123441233ab345bcf64d6574e43653012bcd134c123c412c01234c123
+    3014332fa6ec6e6a66687123cdf1233ab345bcf64d6574e43653012b1233
+    af0ed322ca00ed12
+
+---END OS2 CRYPTO DATA---
+

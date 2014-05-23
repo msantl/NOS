@@ -1,0 +1,22 @@
+---BEGIN OS2 CRYPTO DATA---
+Description:
+    Signature
+
+File name:
+    Datoteka.x
+
+Method:
+    SHA-1
+    RSA
+
+Key length:
+    A0
+    0400
+
+Signature:
+    32345aec43cff2fda786123acbd65454a6cd64e442344231124341241242
+    123123441233ab345bcf64d6574e43653012bcd134c123c412c01234c123
+    d322ca00ed11
+
+---END OS2 CRYPTO DATA---
+

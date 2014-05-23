@@ -1,0 +1,12 @@
+---BEGIN OS2 CRYPTO DATA---
+Description:
+    Secret key
+
+Method:
+    DES
+
+Secret key:
+    1f5ec633c4602255
+
+---END OS2 CRYPTO DATA---
+
