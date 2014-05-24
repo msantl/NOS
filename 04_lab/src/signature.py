@@ -14,8 +14,8 @@ def create_digital_signature(input_file, signature_file, n, e):
     digital_signature.open()
     digital_signature.set_description("Signature")
     digital_signature.set_file_name(input_file)
-    digital_signature.set_method("SHA-1\n\tRSA")
-    digital_signature.set_key_length("A0\n\t0400")
+    digital_signature.set_method(["SHA-1", "RSA"])
+    digital_signature.set_key_length(["A0", "0400"])
 
     #   M = (C1, C2)
     #   C1 = P
@@ -40,8 +40,8 @@ def create_digital_envelope(input_file, envelope_file, n, e):
     digital_envelope.open()
     digital_envelope.set_description("Envelope")
     digital_envelope.set_file_name(input_file)
-    digital_envelope.set_method("AES\n\tRSA")
-    digital_envelope.set_key_length("0100\n\t0400");
+    digital_envelope.set_method(["AES", "RSA"])
+    digital_envelope.set_key_length(["0100", "0400"]);
     #   P = poruka
     #   K = kljuc
     #   M = (C1, C2)
@@ -81,9 +81,7 @@ def check_digital_signature(digital_signature_file, n, e):
     else:
         return False
 
-    return
-
-def check_digital_envelope(digital_envelope_file, n, e):
+def open_digital_envelope(digital_envelope_file, n, e):
     digital_envelope = Reader(digital_envelope_file)
 
     #   M = (C1, C2)
@@ -106,11 +104,11 @@ def main():
         print "Odaberite akciju:"
         print "\tizlaz                        : 0"
         print "\tgeneriraj digitalna omotnica : 1"
-        print "\tgeneriraj digitalni pecat    : 2"
-        print "\tgeneriraj digitalni potpis   : 3"
+        print "\tgeneriraj digitalni potpis   : 2"
+        print "\tgeneriraj digitalni pecat    : 3"
         print "\totvori digitalnu omotincu    : 4"
-        print "\totvori digitalni pecat       : 5"
-        print "\tprovjeri digitalni potpis    : 6"
+        print "\tprovjeri digitalni potpis    : 5"
+        print "\totvori digitalni pecat       : 6"
 
         option = raw_input()
 
@@ -136,7 +134,7 @@ def main():
 
             print "Done"
 
-        elif option == "2":
+        elif option == "3":
             print "Ulazna datoteka: ",
             input_file = raw_input()
 
@@ -178,7 +176,7 @@ def main():
 
             print "Done"
 
-        elif option == "3":
+        elif option == "2":
             print "Ulazna datoteka: ",
             input_file = raw_input()
 
@@ -207,11 +205,11 @@ def main():
             print "Digitalna omotnica: ",
             digital_envelope_file = raw_input()
 
-            print check_digital_envelope(digital_envelope_file,
+            print open_digital_envelope(digital_envelope_file,
                     private_key_r.get_modulus(),
                     private_key_r.get_private_exponent())
 
-        elif option == "5":
+        elif option == "6":
             print "Otvori digitalni pecat ..."
 
             print "Javni kljuc posiljatelja: ",
@@ -233,14 +231,14 @@ def main():
                 digital_signature = Reader(digital_signature_file)
                 digital_envelope_file = digital_signature.get_file_name()
 
-                print check_digital_envelope(digital_envelope_file,
+                print open_digital_envelope(digital_envelope_file,
                         private_key_r.get_modulus(),
                         private_key_r.get_private_exponent())
 
             else:
                 print "Potpis digitalnog pecata ne valja"
 
-        elif option == "6":
+        elif option == "5":
             print "Provjera digitalnog potpisa ..."
 
             print "Javni kljuc posiljatelja: ",

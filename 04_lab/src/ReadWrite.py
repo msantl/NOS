@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 
 import base64
+import binascii
 
 def to_camel_case(str):
     str = re.sub(' ', '_', str)
@@ -55,7 +56,8 @@ class Writer(ReadWrite):
         # string
         if self.filehandle:
             self.filehandle.write("Method:\n")
-            self.filehandle.write("\t" + content +"\n")
+            for method in content:
+                self.filehandle.write("\t" + method +"\n")
             self.filehandle.write("\n")
 
     def set_secret_key(self, content):
@@ -70,11 +72,13 @@ class Writer(ReadWrite):
         # hex
         if self.filehandle:
             self.filehandle.write("Key length:\n")
-            self.filehandle.write("\t" + content +"\n")
+            for key_length in content:
+                self.filehandle.write("\t" + key_length +"\n")
             self.filehandle.write("\n")
 
     def set_initialization_vector(self, content):
         # hex
+        content = binascii.hexlify(content)
         content = format60(content)
         if self.filehandle:
             self.filehandle.write("Initialization vector:\n")
@@ -140,6 +144,7 @@ class Writer(ReadWrite):
 
     def set_envelope_crypt_key(self, content):
         # hex
+        content = binascii.hexlify(content)
         content = format60(content)
         if self.filehandle:
             self.filehandle.write("Envelope crypt key:\n")
@@ -149,7 +154,7 @@ class Writer(ReadWrite):
 class Reader(ReadWrite):
 
     def __init__(self, filename):
-        self.content = defaultdict(str)
+        self.content = defaultdict(list)
         file_content = False
 
         print "Loading file ", filename, " ...",
@@ -157,7 +162,7 @@ class Reader(ReadWrite):
         file_handle = open(filename, "r")
 
         file_entry = None
-        file_value = ""
+        file_value = []
 
         for line in file_handle:
             line = line.rstrip()
@@ -170,9 +175,9 @@ class Reader(ReadWrite):
                 if not len(line):
                     self.content[file_entry] = file_value
                     file_entry = None
-                    file_value = ""
+                    file_value = []
                 elif file_entry:
-                    file_value += line.lstrip().rstrip()
+                    file_value.append(line.lstrip().rstrip())
                 else:
                     file_entry = to_camel_case(line)
 
@@ -181,53 +186,62 @@ class Reader(ReadWrite):
 
     def get_description(self):
         # string
-        return self.content['description']
+        return ''.join(self.content['description'])
 
-    def get_method(self):
+    def get_method(self, x):
         # string
-        return self.content['method']
+        return self.content['method'][x]
 
     def get_secret_key(self):
         # hex
-        return (long(self.content['secret_key'], 16))
+        content = ''.join(self.content['secret_key'])
+        return (long(content, 16))
 
-    def get_key_length(self):
+    def get_key_length(self, x):
         # hex
-        return (long(self.content['key_length'], 16))
+        return (long(self.content['key_length'][x], 16))
 
     def get_initialization_vector(self):
         # hex
-        return self.content['initialization_vector']
+        content = ''.join(self.content['initialization_vector'])
+        return binascii.unhexlify(content)
 
     def get_modulus(self):
         # hex
-        return (long(self.content['modulus'], 16))
+        content = ''.join(self.content['modulus'])
+        return (long(content, 16))
 
     def get_private_exponent(self):
         # hex
-        return (long(self.content['private_exponent'], 16))
+        content = ''.join(self.content['private_exponent'])
+        return (long(content, 16))
 
     def get_public_exponent(self):
         # hex
-        return (long(self.content['public_exponent'], 16))
+        content = ''.join(self.content['public_exponent'])
+        return (long(content, 16))
 
     def get_data(self):
         # base64
-        return base64.b64decode(self.content['data'])
+        content = ''.join(self.content['data'])
+        return base64.b64decode(content)
 
     def get_signature(self):
         # hex
-        return (long(self.content['signature'], 16))
+        content = ''.join(self.content['signature'])
+        return (long(content, 16))
 
     def get_file_name(self):
         # string
-        return self.content['file_name']
+        return ''.join(self.content['file_name'])
 
     def get_envelope_data(self):
         # base64
-        return base64.b64decode(self.content['envelope_data'])
+        content = ''.join(self.content['envelope_data'])
+        return base64.b64decode(content)
 
     def get_envelope_crypt_key(self):
         # hex
-        return self.content['envelope_crypt_key']
+        content = ''.join(self.content['envelope_crypt_key'])
+        return binascii.unhexlify(content)
 
