@@ -1,0 +1,19 @@
+---BEGIN OS2 CRYPTO DATA---
+Description:
+	Signature
+
+File name:
+	../c.txt
+
+Method:
+	SHA-1
+	RSA
+
+Key length:
+	A0
+	0400
+
+Signature:
+	57bceb328fd9ae2c9c3d503e2b3f877909123a4102e3f114b4ad95c127cb8fe94f2ef4a1b6b251036b1885862ae0c6939ee5fa05cbf73d55786150629453346c8b5c13fd85e114e32da17266d5b9f696ab454965580dbc228e847c28ea0129bbb2a86dc2a9662c5cfb17d5d90360edbafbaa6c68fd03b49a453aa12a505db5ce
+
+---END OS2 CRYPTO DATA---

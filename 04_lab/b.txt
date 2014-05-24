@@ -1,0 +1,23 @@
+---BEGIN OS2 CRYPTO DATA---
+Description:
+	Signature
+
+File name:
+	../tekst.txt
+
+Method:
+	SHA-1
+	RSA
+
+Key length:
+	A0
+	0400
+
+Signature:
+	2ed484c8cf9318412d87dcdde26904175c8204f48571ccfe056cf03a0e16
+	6f473a4571f775274371483495b703ea3a9eb9c90ebc3e923e1894ad1809
+	8bf34536ea82c222d778ec961c1ed5b62b404dc86b1d23e3740c932aab18
+	95db56b8ccd5934b5727a93a4e65d306b8d419ca6316456c94acb8516a2a
+	f96c07e685a189fb
+
+---END OS2 CRYPTO DATA---

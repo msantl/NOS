@@ -1,10 +1,26 @@
 import re
 from collections import defaultdict
 
+import base64
+
 def to_camel_case(str):
     str = re.sub(' ', '_', str)
     str = re.sub(':', '', str)
     return str.lower()
+
+def format60(text):
+    position = 0
+    formatted = ""
+
+    while position < len(text):
+        if position + 60 < len(text):
+            formatted += text[position:position + 60] + "\n\t"
+        else:
+            formatted += text[position:]
+
+        position += 60
+
+    return formatted
 
 class ReadWrite:
 
@@ -20,7 +36,7 @@ class Writer(ReadWrite):
         self.filehandle = None
 
     def open(self):
-        self.filehandle = open(self.filename)
+        self.filehandle = open(self.filename, "w")
         self.filehandle.write(self.START_SEQUENCE + "\n")
 
     def close(self):
@@ -44,6 +60,7 @@ class Writer(ReadWrite):
 
     def set_secret_key(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Secret key:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -57,6 +74,8 @@ class Writer(ReadWrite):
             self.filehandle.write("\n")
 
     def set_initialization_vector(self, content):
+        # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Initialization vector:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -64,6 +83,7 @@ class Writer(ReadWrite):
 
     def set_modulus(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Modulus:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -71,6 +91,7 @@ class Writer(ReadWrite):
 
     def set_private_exponent(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Private exponent:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -78,13 +99,16 @@ class Writer(ReadWrite):
 
     def set_public_exponent(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Public exponent:\n")
             self.filehandle.write("\t" + content +"\n")
             self.filehandle.write("\n")
 
     def set_data(self, content):
-        # base 64
+        # base64
+        content = base64.b64encode(content)
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Data:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -92,6 +116,7 @@ class Writer(ReadWrite):
 
     def set_signature(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Signature:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -106,6 +131,8 @@ class Writer(ReadWrite):
 
     def set_envelope_data(self, content):
         # base64
+        content = base64.b64encode(content)
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Envelope data:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -113,6 +140,7 @@ class Writer(ReadWrite):
 
     def set_envelope_crypt_key(self, content):
         # hex
+        content = format60(content)
         if self.filehandle:
             self.filehandle.write("Envelope crypt key:\n")
             self.filehandle.write("\t" + content +"\n")
@@ -126,7 +154,7 @@ class Reader(ReadWrite):
 
         print "Loading file ", filename, " ...",
 
-        file_handle = open(filename)
+        file_handle = open(filename, "r")
 
         file_entry = None
         file_value = ""
@@ -152,41 +180,54 @@ class Reader(ReadWrite):
         file_handle.close()
 
     def get_description(self):
+        # string
         return self.content['description']
 
     def get_method(self):
+        # string
         return self.content['method']
 
     def get_secret_key(self):
-        return self.content['secret_key']
+        # hex
+        return (long(self.content['secret_key'], 16))
 
     def get_key_length(self):
-        return self.content['key_length']
+        # hex
+        return (long(self.content['key_length'], 16))
 
     def get_initialization_vector(self):
+        # hex
         return self.content['initialization_vector']
 
     def get_modulus(self):
-        return self.content['modulus']
+        # hex
+        return (long(self.content['modulus'], 16))
 
     def get_private_exponent(self):
-        return self.content['private_exponent']
+        # hex
+        return (long(self.content['private_exponent'], 16))
 
     def get_public_exponent(self):
-        return self.content['public_exponent']
+        # hex
+        return (long(self.content['public_exponent'], 16))
 
     def get_data(self):
-        return self.content['data']
+        # base64
+        return base64.b64decode(self.content['data'])
 
     def get_signature(self):
-        return self.content['signature']
+        # hex
+        return (long(self.content['signature'], 16))
 
     def get_file_name(self):
+        # string
         return self.content['file_name']
 
     def get_envelope_data(self):
-        return self.content['envelope_data']
+        # base64
+        return base64.b64decode(self.content['envelope_data'])
 
     def get_envelope_crypt_key(self):
+        # hex
         return self.content['envelope_crypt_key']
 
