@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     uint8_t *sha3sum = sponge((uint8_t *)argv[1], size);
 
     for (uint32_t i = 0; i < PARAMS.n; ++i) {
-        printf("%x", sha3sum[i]);
+        printf("%.2x", sha3sum[i]);
     }   printf("\n");
 
     free(sha3sum);
